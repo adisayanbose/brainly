@@ -112,7 +112,6 @@ app.post("/signin", async (req, res) => {
 
 app.post("/content", UserMiddleware, async (req, res) => {
   const content = req.body;
-  console.log(content);
   await ContentModel.create({
     link: req.body.link,
     type: req.body.type,
@@ -124,6 +123,32 @@ app.post("/content", UserMiddleware, async (req, res) => {
     message: "content created",
   });
 });
+
+app.get("/contents",UserMiddleware,async (req,res)=>{
+    const contents=await ContentModel.find({
+        userId:req.userId
+    }).populate('userId','username')
+    res.json({
+        contents:contents
+    })
+})
+
+app.delete("/contents",UserMiddleware,async (req,res)=>{
+    
+    const delteedcontent=   await ContentModel.deleteOne({
+        _id:req.body.ContentId,
+        userId:req.userId
+    })
+    if(delteedcontent.deletedCount>0){
+    res.json({
+        message:"content deleted"
+    })}
+    else{
+        res.json({
+            message:"improper content id"
+        })
+    }
+})
 
 
 

@@ -132,6 +132,32 @@ app.post("/content", userMiddleware_1.UserMiddleware, (req, res) => __awaiter(vo
         message: "content created",
     });
 }));
+app.get("/contents", userMiddleware_1.UserMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.userId);
+    const contents = yield db_1.ContentModel.find({
+        userId: req.userId
+    }).populate('userId', 'username');
+    res.json({
+        contents: contents
+    });
+}));
+app.delete("/contents", userMiddleware_1.UserMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const delteedcontent = yield db_1.ContentModel.deleteOne({
+        _id: req.body.ContentId,
+        userId: req.userId
+    });
+    console.log(delteedcontent);
+    if (delteedcontent.deletedCount > 0) {
+        res.json({
+            message: "content deleted"
+        });
+    }
+    else {
+        res.json({
+            message: "improper content id"
+        });
+    }
+}));
 main();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
